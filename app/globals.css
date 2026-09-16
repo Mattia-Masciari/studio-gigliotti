@@ -183,17 +183,17 @@ textarea {
 
   .grid-container {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 1.25rem !important;
+    gap: 1.15rem !important;
     width: 96vw !important;
     max-width: 500px !important;
-    margin-top: 4.2rem !important;
+    margin-top: 9.5rem !important;
     transform: rotateX(4deg) rotateY(-4deg) scale(1.12) !important;
   }
 
   .dash-card {
     width: 100% !important;
-    height: 175px !important;
-    border-radius: 22px !important;
+    height: 160px !important;
+    border-radius: 20px !important;
   }
 
   .dash-card div.card-badge {
@@ -219,17 +219,17 @@ textarea {
 
   .grid-container {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 1.15rem !important;
+    gap: 1rem !important;
     width: 98vw !important;
     max-width: 460px !important;
-    margin-top: 4.5rem !important;
+    margin-top: 9.8rem !important;
     transform: rotateX(4deg) rotateY(-4deg) scale(1.15) !important;
   }
 
   .dash-card {
     width: 100% !important;
-    height: 170px !important;
-    border-radius: 20px !important;
+    height: 155px !important;
+    border-radius: 18px !important;
   }
 
   .dash-card div.card-badge {
