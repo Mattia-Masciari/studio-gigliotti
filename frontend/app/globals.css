@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 10, 10, 10;
+  --background-end-rgb: 5, 5, 5;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Initially hidden for dashboard */
+  background: #a7c9e5; /* Sky color from screenshot */
+  color: rgb(var(--foreground-rgb));
+}
+
+/* Sky Background behind everything */
+#sky-bg {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(to bottom, #a7c9e5 0%, #d1e6f5 100%);
+  z-index: -2;
+}
+
+/* The Dashboard Layer */
+#dashboard {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1500px;
+  overflow: hidden;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, rgba(167,201,229,1) 100%);
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  transform: rotateX(15deg) rotateY(-20deg) scale(1.2);
+  transform-style: preserve-3d;
+}
+
+.dash-card {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 350px;
+  height: 240px;
+  position: relative;
+}
+
+.dash-card:hover {
+  transform: translateZ(30px) translateY(-10px);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.15);
+}
+
+.dash-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Overlay over primary card to indicate interactivity */
+.primary-indicator {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.dash-card:hover .primary-indicator {
+  opacity: 1;
+}
+
+/* The Main Content Container (Hidden initially) */
+#main-site {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #000;
+  z-index: 50;
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.gradient-text {
+  background: linear-gradient(to right, #fff, #888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Flash white transition helper */
+#flash-overlay {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  z-index: 200;
+  pointer-events: none;
+}

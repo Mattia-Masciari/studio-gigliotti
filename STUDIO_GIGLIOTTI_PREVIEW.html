@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio Gigliotti | Premium Accounting & Advisory Firm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-dark': '#0a0a0a',
+                        'brand-surface': '#121212',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #a7c9e5;
+            color: #ffffff;
+        }
+
+        #sky-bg {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, #a7c9e5 0%, #d1e6f5 100%);
+            z-index: -2;
+        }
+
+        #dashboard {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1500px;
+            overflow: hidden;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, rgba(167, 201, 229, 1) 100%);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            transform: rotateX(15deg) rotateY(-20deg) scale(1.1);
+            transform-style: preserve-3d;
+        }
+
+        .dash-card {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 330px;
+            height: 220px;
+            position: relative;
+        }
+
+        .dash-card:hover {
+            transform: translateZ(30px) translateY(-10px);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15);
+        }
+
+        .dash-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .primary-indicator {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .dash-card:hover .primary-indicator {
+            opacity: 1;
+        }
+
+        #main-site {
+            visibility: hidden;
+            opacity: 0;
+            position: relative;
+            z-index: 10;
+            background: #000;
+            min-height: 100vh;
+        }
+
+        #flash-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .glass-nav {
+            background: rgba(18, 18, 18, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="sky-bg"></div>
+    <div id="flash-overlay"></div>
+
+    <!-- DASHBOARD LAYER -->
+    <div id="dashboard"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 2rem;">
+        <div
+            style="position: absolute; top: 1.25rem; width: 100%; text-align: center; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none;">
+            <div
+                style="width: 72px; height: 72px; border-radius: 50%; overflow: hidden; border: 3px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin-bottom: 0.4rem; pointer-events: auto;">
+                <img src="Assets/logo.jpg" alt="Logo Studio Gigliotti"
+                    style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <h2
+                style="font-size: 1.75rem; font-weight: 700; color: #0c4a6e; margin: 0; letter-spacing: -0.02em; text-shadow: 0 2px 12px rgba(255,255,255,0.7);">
+                Studio Gigliotti</h2>
+            <p
+                style="color: #0369a1; font-weight: 600; font-size: 0.85rem; margin-top: 0.2rem; text-shadow: 0 2px 12px rgba(255,255,255,0.7);">
+                Seleziona una Card per Esplorare il Sito</p>
+        </div>
+
+        <div class="grid-container" id="gridContainer" style="margin-top: 3.5rem;">
+            <!-- Card 1: Expertise -->
+            <div class="dash-card" style="opacity: 0.9; transform: translateY(20px);"
+                onclick="initiateExploration(this, '#expertise')">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=400&q=60"
+                    alt="Expertise">
+                <div
+                    style="position: absolute; bottom: 1rem; left: 1rem; background: rgba(255,255,255,0.95); border: 1px solid rgba(255,255,255,0.9); padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; color: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(4px);">
+                    <i class="ph ph-briefcase" style="font-size: 16px; color: #000;"></i> Expertise
+                </div>
+            </div>
+
+            <!-- Card 2: Our Vision -->
+            <div class="dash-card" style="opacity: 0.9; transform: translateX(10px);"
+                onclick="initiateExploration(this, '#vision')">
+                <img src="Assets/tutti.jpg" alt="Vision">
+                <div
+                    style="position: absolute; bottom: 1rem; left: 1rem; background: rgba(255,255,255,0.95); border: 1px solid rgba(255,255,255,0.9); padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; color: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(4px);">
+                    <i class="ph ph-eye" style="font-size: 16px; color: #000;"></i> Our Vision
+                </div>
+            </div>
+
+            <!-- Card 3: Connect -->
+            <div class="dash-card" style="opacity: 0.9;" onclick="initiateExploration(this, '#contact')">
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=60"
+                    alt="Contact">
+                <div
+                    style="position: absolute; bottom: 1rem; left: 1rem; background: rgba(255,255,255,0.95); border: 1px solid rgba(255,255,255,0.9); padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; color: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(4px);">
+                    <i class="ph ph-handshake" style="font-size: 16px; color: #000;"></i> Connect
+                </div>
+            </div>
+
+            <!-- Card 4: Our Mission -->
+            <div class="dash-card" style="opacity: 0.9; transform: translateY(-10px);"
+                onclick="initiateExploration(this, '#mission')">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=400&q=60"
+                    alt="Mission">
+                <div
+                    style="position: absolute; bottom: 1rem; left: 1rem; background: rgba(255,255,255,0.95); border: 1px solid rgba(255,255,255,0.9); padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; color: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(4px);">
+                    <i class="ph ph-target" style="font-size: 16px; color: #000;"></i> Our Mission
+                </div>
+            </div>
+
+            <!-- Card 5 (ACTIVE): Utility & Calcolatori -->
+            <div id="active-card" class="dash-card"
+                style="transform: scale(1.1); z-index: 20; border: 4px solid #fff; background: #000;"
+                onclick="initiateExploration(this, '#utility')">
+                <img src="https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=500&q=80"
+                    alt="Utility e Calcolatori" style="opacity: 0.8;">
+                <div
+                    style="position: absolute; inset: 0; background: linear-gradient(to top right, rgba(0,0,0,0.8), transparent);">
+                </div>
+                <div
+                    style="position: absolute; bottom: 1rem; left: 1rem; z-index: 10; display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
+                    <div
+                        style="background: rgba(255,255,255,0.95); border: 1px solid rgba(255,255,255,0.9); padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; color: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(4px);">
+                        <i class="ph ph-calculator" style="font-size: 16px; color: #000;"></i> Utility & Calcolatori
+                    </div>
+                    <div
+                        style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); margin-left: 4px;">
+                        Strumenti pratici & Metodo operativo</div>
+                </div>
+                <div class="primary-indicator" style="z-index: 10;">
+                    <div
+                        style="background: #fff; color: #000; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                        <i class="ph-fill ph-play"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6: News & Bandi -->
+            <div class="dash-card" style="opacity: 0.9; transform: translateY(-30px);"
+                onclick="initiateExploration(this, '#news')">
+                <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=400&q=60"
+                    alt="News e Bandi">
+                <div
+                    style="position: absolute; bottom: 1rem; left: 1rem; background: rgba(255,255,255,0.95); border: 1px solid rgba(255,255,255,0.9); padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; color: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(4px);">
+                    <i class="ph ph-newspaper" style="font-size: 16px; color: #000;"></i> News & Bandi
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN SITE LAYER -->
+    <div id="main-site">
+        <!-- Nav -->
+        <nav class="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center">
+            <div class="relative w-14 h-14 rounded-full overflow-hidden border border-white/30 bg-black flex items-center justify-center cursor-pointer shadow-lg hover:scale-105 transition-transform"
+                onclick="returnToDashboard()" title="Torna alla Dashboard">
+                <img src="Assets/logo.jpg" alt="Studio Gigliotti Logo" class="w-full h-full object-cover">
+            </div>
+
+            <div class="hidden lg:flex items-center space-x-6 px-8 py-3 glass-nav rounded-full">
+                <a href="#expertise"
+                    class="text-xs uppercase tracking-widest text-gray-300 hover:text-white transition-colors">Expertise</a>
+                <a href="#vision"
+                    class="text-xs uppercase tracking-widest text-gray-300 hover:text-white transition-colors">Vision</a>
+                <a href="#mission"
+                    class="text-xs uppercase tracking-widest text-gray-300 hover:text-white transition-colors">Mission</a>
+                <a href="#utility"
+                    class="text-xs uppercase tracking-widest text-gray-300 hover:text-white transition-colors">Utility &
+                    Metodo</a>
+                <a href="#news"
+                    class="text-xs uppercase tracking-widest text-gray-300 hover:text-white transition-colors">News &
+                    Bandi</a>
+                <a href="#contact"
+                    class="text-xs uppercase tracking-widest text-gray-300 hover:text-white transition-colors">Contatti</a>
+            </div>
+
+            <button onclick="returnToDashboard()"
+                class="px-6 py-3 bg-white text-black text-xs uppercase tracking-widest font-bold rounded-full hover:bg-neutral-200 transition-colors">
+                Dashboard
+            </button>
+        </nav>
+
+        <!-- Hero Section -->
+        <section
+            class="relative min-h-screen flex flex-col items-center justify-center pt-36 pb-20 px-6 overflow-hidden">
+            <!-- Subtle backdrop glow -->
+            <div
+                class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sky-500/10 rounded-full blur-[120px] pointer-events-none">
+            </div>
+
+            <div class="w-full max-w-5xl text-center flex flex-col items-center relative z-10">
+                <!-- Top Badge -->
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-sky-400 text-xs uppercase tracking-widest font-bold mb-8 shadow-inner">
+                    <i class="ph ph-buildings text-base"></i> Studio Commercialista & Advisory Firm
+                </div>
+
+                <!-- Main Title -->
+                <h1 id="hero-title"
+                    class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1]">
+                    <span class="block text-white">Chiarezza Fiscale e</span>
+                    <span
+                        class="block bg-gradient-to-r from-sky-300 via-sky-100 to-white bg-clip-text text-transparent">Strategia
+                        Finanziaria per l'Impresa</span>
+                </h1>
+
+                <!-- Subtitle in Italian -->
+                <p class="text-neutral-300 text-lg md:text-xl max-w-3xl leading-relaxed mb-10 font-normal">
+                    Affianchiamo aziende, startup e professionisti nell'ottimizzazione del carico fiscale, nel controllo
+                    di gestione e nell'accesso alle migliori opportunità di finanza agevolata.
+                </p>
+
+                <!-- CTAs -->
+                <div id="hero-cta" class="flex flex-col sm:flex-row items-center gap-5 mb-16">
+                    <a href="#contact"
+                        class="group px-8 py-4 bg-sky-500 hover:bg-sky-400 text-black font-extrabold rounded-full transition-all flex items-center gap-3 shadow-lg shadow-sky-500/25 scale-100 hover:scale-105">
+                        <i class="ph ph-video-camera text-xl"></i> Prenota una Call su Google Meet
+                    </a>
+                    <a href="#utility"
+                        class="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/20 text-white rounded-full font-bold transition-all flex items-center gap-2 backdrop-blur-md">
+                        <i class="ph ph-calculator text-lg text-sky-400"></i> Calcolatori & Utility
+                    </a>
+                </div>
+
+                <!-- Value Proposition Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full text-left mt-4">
+                    <div class="p-6 rounded-2xl bg-neutral-900/60 border border-white/10 backdrop-blur-lg">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-400/20 text-sky-400 flex items-center justify-center mb-4">
+                            <i class="ph ph-video-camera text-xl"></i>
+                        </div>
+                        <h3 class="text-white font-bold text-base mb-1">100% Consulenza Remota</h3>
+                        <p class="text-neutral-400 text-xs leading-relaxed">Video call dedicate su Google Meet e
+                            condivisione sicura dei documenti in cloud.</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-neutral-900/60 border border-white/10 backdrop-blur-lg">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-400/20 text-emerald-400 flex items-center justify-center mb-4">
+                            <i class="ph ph-target text-xl"></i>
+                        </div>
+                        <h3 class="text-white font-bold text-base mb-1">Finanza Agevolata & Bandi</h3>
+                        <p class="text-neutral-400 text-xs leading-relaxed">Supporto per Transizione 5.0, crediti
+                            d'imposta e contributi a fondo perduto.</p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-neutral-900/60 border border-white/10 backdrop-blur-lg">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-400/20 text-purple-400 flex items-center justify-center mb-4">
+                            <i class="ph ph-chart-line-up text-xl"></i>
+                        </div>
+                        <h3 class="text-white font-bold text-base mb-1">Pianificazione & Controllo</h3>
+                        <p class="text-neutral-400 text-xs leading-relaxed">Analisi dei flussi di cassa e reportistica
+                            per decisioni aziendali trasparenti e sicure.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expertise -->
+        <section id="expertise" class="py-32 px-6 max-w-7xl mx-auto border-t border-white/10">
+            <div class="mb-12">
+                <span class="text-xs uppercase tracking-widest text-sky-400 font-bold">Aree di Intervento</span>
+                <h2 class="text-4xl md:text-5xl font-bold mt-2">Le Nostre Competenze Core</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-neutral-900 rounded-3xl p-8 border border-white/5">
+                    <i class="ph ph-buildings text-4xl text-sky-400 mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-3">Corporate Advisory</h3>
+                    <p class="text-neutral-400 text-sm">Strategic structuring, global governance, and high-level risk
+                        architecture for scaling enterprises.</p>
+                </div>
+                <div class="bg-neutral-900 rounded-3xl p-8 border border-white/5">
+                    <i class="ph ph-calculator text-4xl text-sky-400 mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-3">Tax Engineering</h3>
+                    <p class="text-neutral-400 text-sm">Optimized cross-border systems and corporate tax mitigation
+                        strategies with full compliance.</p>
+                </div>
+                <div class="bg-neutral-900 rounded-3xl p-8 border border-white/5">
+                    <i class="ph ph-briefcase text-4xl text-sky-400 mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-3">Wealth Advisory</h3>
+                    <p class="text-neutral-400 text-sm">Private legacy wealth advisory, estate planning, and
+                        multi-family office coordination.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vision -->
+        <section id="vision" class="py-32 px-6 max-w-7xl mx-auto border-t border-white/10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+                    <img src="Assets/tutti.jpg" alt="Team Studio Gigliotti"
+                        class="w-full h-full object-cover grayscale brightness-75 contrast-125 hover:grayscale-0 transition-all duration-700">
+                </div>
+                <div>
+                    <span class="text-xs uppercase tracking-widest text-sky-400 font-bold">La Nostra Visione</span>
+                    <h2 class="text-4xl md:text-5xl font-bold mt-2 mb-6">A legacy of precision & trust</h2>
+                    <p class="text-neutral-400 text-lg leading-relaxed mb-8">
+                        Uniamo il rigore dell'analisi contabile alla visione strategica d'impresa. Decenni di guida
+                        orientata ai mercati dei capitali ed al tessuto imprenditoriale di prestigio.
+                    </p>
+                    <div class="flex gap-12 border-t border-white/10 pt-6">
+                        <div>
+                            <div class="text-4xl font-bold text-white mb-1">25+</div>
+                            <div class="text-xs text-neutral-400 uppercase tracking-widest">Anni di Esperienza</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-white mb-1">€2B+</div>
+                            <div class="text-xs text-neutral-400 uppercase tracking-widest">Asset Protetti</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission -->
+        <section id="mission" class="py-32 px-6 max-w-7xl mx-auto border-t border-white/10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-5">
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-bold uppercase tracking-wider mb-6">
+                        <i class="ph ph-target"></i> Our Mission
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+                        Guida Strategica & Valore Sostenibile
+                    </h2>
+                    <p class="text-neutral-400 text-lg leading-relaxed mb-8">
+                        La nostra mission è affiancare aziende ed imprenditori con soluzioni finanziarie e tributarie ad
+                        alto impatto, trasformando ogni complessità fiscale in una leva di crescita.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4 p-4 rounded-2xl bg-neutral-900 border border-white/5">
+                            <i class="ph ph-check-circle text-2xl text-sky-400"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">Trasparenza & Accuratezza</h4>
+                                <p class="text-neutral-400 text-sm mt-1">Audit rigorosi e reportistica chiara per
+                                    decisioni tempestive.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-4 rounded-2xl bg-neutral-900 border border-white/5">
+                            <i class="ph ph-trend-up text-2xl text-sky-400"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">Pianificazione Proattiva</h4>
+                                <p class="text-neutral-400 text-sm mt-1">Anticipiamo i cambiamenti normativi creando
+                                    modelli su misura.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div
+                        class="bg-neutral-900 p-8 rounded-3xl border border-white/5 h-64 flex flex-col justify-between">
+                        <span class="text-3xl text-sky-400 font-light">01</span>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Presidio Fiscale Globale</h3>
+                            <p class="text-neutral-400 text-sm">Tutela costante del patrimonio aziendale e personale.
+                            </p>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-neutral-900 p-8 rounded-3xl border border-white/5 h-64 flex flex-col justify-between">
+                        <span class="text-3xl text-sky-400 font-light">02</span>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Digital Accounting</h3>
+                            <p class="text-neutral-400 text-sm">Gestione contabile digitale in tempo reale.</p>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-neutral-900 p-8 rounded-3xl border border-white/5 h-64 flex flex-col justify-between">
+                        <span class="text-3xl text-sky-400 font-light">03</span>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Governance & M&A</h3>
+                            <p class="text-neutral-400 text-sm">Supporto in operazioni straordinarie e riassetti.</p>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-neutral-900 p-8 rounded-3xl border border-white/5 h-64 flex flex-col justify-between">
+                        <span class="text-3xl text-sky-400 font-light">04</span>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">ESG & Sostenibilità</h3>
+                            <p class="text-neutral-400 text-sm">Accompagnamento nei percorsi di sostenibilità d'impresa.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Utility & Calcolatori -->
+        <section id="utility"
+            class="py-32 px-6 max-w-7xl mx-auto border-t border-white/10 bg-neutral-950/60 rounded-3xl my-12">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-white text-xs font-bold uppercase tracking-wider mb-4">
+                    <i class="ph ph-calculator"></i> Utility & Calcolatori
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">Strumenti Pratici & Metodo Operativo</h2>
+                <p class="text-neutral-400 text-lg">
+                    Risorse interattive, simulazioni d'impatto finanziario e la nostra metodologia di lavoro in 4 step
+                    per la massima trasparenza.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <div class="bg-neutral-900 p-8 rounded-3xl border border-white/10 flex flex-col justify-between">
+                    <div>
+                        <i class="ph ph-calculator text-4xl text-sky-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-3">Simulatore Imposte & Budgeting</h3>
+                        <p class="text-neutral-400 text-sm mb-6">Stima orientativa della pressione fiscale e proiezioni
+                            dei flussi di cassa operativi.</p>
+                    </div>
+                    <button
+                        class="w-full py-3 bg-white/10 hover:bg-white hover:text-black rounded-full text-xs font-bold uppercase tracking-wider transition-all">Avvia
+                        Calcolatore</button>
+                </div>
+
+                <div class="bg-neutral-900 p-8 rounded-3xl border border-white/10 flex flex-col justify-between">
+                    <div>
+                        <i class="ph ph-download-simple text-4xl text-sky-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-3">Checklist Documentale</h3>
+                        <p class="text-neutral-400 text-sm mb-6">Download immediato dei modelli e guide pratiche per
+                            adempimenti periodici.</p>
+                    </div>
+                    <button
+                        class="w-full py-3 bg-white/10 hover:bg-white hover:text-black rounded-full text-xs font-bold uppercase tracking-wider transition-all">Scarica
+                        Kit Risorse</button>
+                </div>
+
+                <div class="bg-neutral-900 p-8 rounded-3xl border border-white/10 flex flex-col justify-between">
+                    <div>
+                        <i class="ph ph-trend-up text-4xl text-sky-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-3">Analisi Convenienza Bando</h3>
+                        <p class="text-neutral-400 text-sm mb-6">Test rapido di pre-fattibilità per verificare
+                            l'idoneità ai finanziamenti PNRR e regionali.</p>
+                    </div>
+                    <button
+                        class="w-full py-3 bg-white/10 hover:bg-white hover:text-black rounded-full text-xs font-bold uppercase tracking-wider transition-all">Verifica
+                        Requisiti</button>
+                </div>
+            </div>
+
+            <div class="border border-white/10 rounded-3xl p-8 bg-neutral-900/50">
+                <h3 class="text-2xl font-bold mb-8 text-center">Come Opera lo Studio Gigliotti</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="p-6 bg-black/40 rounded-2xl border border-white/5">
+                        <span class="text-sky-400 font-mono text-xs">STEP 01</span>
+                        <h4 class="font-bold text-lg mt-2 mb-1">Check-up Iniziale</h4>
+                        <p class="text-neutral-400 text-xs">Analisi preliminare della situazione contabile e rilevazione
+                            delle criticità.</p>
+                    </div>
+                    <div class="p-6 bg-black/40 rounded-2xl border border-white/5">
+                        <span class="text-sky-400 font-mono text-xs">STEP 02</span>
+                        <h4 class="font-bold text-lg mt-2 mb-1">Piano Strategico</h4>
+                        <p class="text-neutral-400 text-xs">Definizione della roadmap fiscale e degli obiettivi
+                            economico-patrimoniali.</p>
+                    </div>
+                    <div class="p-6 bg-black/40 rounded-2xl border border-white/5">
+                        <span class="text-sky-400 font-mono text-xs">STEP 03</span>
+                        <h4 class="font-bold text-lg mt-2 mb-1">Esecuzione Digitale</h4>
+                        <p class="text-neutral-400 text-xs">Gestione continua delle pratiche con condivisione cloud e
+                            controllo costi.</p>
+                    </div>
+                    <div class="p-6 bg-black/40 rounded-2xl border border-white/5">
+                        <span class="text-sky-400 font-mono text-xs">STEP 04</span>
+                        <h4 class="font-bold text-lg mt-2 mb-1">Monitoring & Optimization</h4>
+                        <p class="text-neutral-400 text-xs">Revisioni periodiche e riallineamento costante in base alle
+                            novità normative.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- News & Bandi -->
+        <section id="news" class="py-32 px-6 max-w-7xl mx-auto border-t border-white/10">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 gap-6">
+                <div>
+                    <div
+                        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-950 border border-sky-500/30 text-sky-400 text-xs font-bold uppercase tracking-wider mb-4">
+                        <i class="ph ph-linkedin-logo"></i> LinkedIn Live Integration
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-bold tracking-tight">News & Bandi</h2>
+                    <p class="text-neutral-400 text-lg mt-3 max-w-2xl">
+                        Aggiornamenti in tempo reale, circolari operative e opportunità di finanza agevolata
+                        direttamente collegate alla pagina LinkedIn ufficiale di Studio Gigliotti.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3 bg-neutral-900 border border-white/10 px-5 py-3 rounded-2xl">
+                    <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+                    <span class="text-xs font-mono text-neutral-300">Sincronizzazione Automatica LinkedIn Attiva</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div
+                    class="bg-neutral-900 rounded-3xl border border-white/10 overflow-hidden flex flex-col justify-between">
+                    <div class="p-8">
+                        <div class="flex justify-between items-center text-xs text-neutral-500 mb-4 font-mono">
+                            <span class="text-sky-400 font-bold uppercase">Bando Attivo</span>
+                            <span>28 Luglio 2026</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Transizione 5.0: Linee guida operative per il credito
+                            d'imposta</h3>
+                        <p class="text-neutral-400 text-sm mb-6">Focus sui requisiti di efficientamento energetico e
+                            digitalizzazione. Prenotazione risorse per i progetti 2026.</p>
+                    </div>
+                    <div class="p-6 bg-black/40 border-t border-white/5 flex justify-between items-center text-xs">
+                        <span class="text-neutral-400 flex items-center gap-1.5"><i
+                                class="ph ph-linkedin-logo text-sky-400"></i> Postato su LinkedIn</span>
+                        <a href="https://www.linkedin.com/company/studio-gigliotti/?originalSubdomain=it"
+                            target="_blank" class="text-sky-400 font-bold hover:underline flex items-center gap-1">Leggi
+                            su LinkedIn <i class="ph ph-arrow-up-right"></i></a>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-neutral-900 rounded-3xl border border-white/10 overflow-hidden flex flex-col justify-between">
+                    <div class="p-8">
+                        <div class="flex justify-between items-center text-xs text-neutral-500 mb-4 font-mono">
+                            <span class="text-amber-400 font-bold uppercase">Fisco & Bilancio</span>
+                            <span>24 Luglio 2026</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Scadenziario Fiscale Estate: proroghe e versamenti ISA</h3>
+                        <p class="text-neutral-400 text-sm mb-6">Sintesi operativa delle principali scadenze di mezza
+                            estate e indicazioni per la rateizzazione delle imposte.</p>
+                    </div>
+                    <div class="p-6 bg-black/40 border-t border-white/5 flex justify-between items-center text-xs">
+                        <span class="text-neutral-400 flex items-center gap-1.5"><i
+                                class="ph ph-linkedin-logo text-sky-400"></i> Postato su LinkedIn</span>
+                        <a href="https://www.linkedin.com/company/studio-gigliotti/?originalSubdomain=it"
+                            target="_blank" class="text-sky-400 font-bold hover:underline flex items-center gap-1">Leggi
+                            su LinkedIn <i class="ph ph-arrow-up-right"></i></a>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-neutral-900 rounded-3xl border border-white/10 overflow-hidden flex flex-col justify-between">
+                    <div class="p-8">
+                        <div class="flex justify-between items-center text-xs text-neutral-500 mb-4 font-mono">
+                            <span class="text-emerald-400 font-bold uppercase">Finanza Agevolata</span>
+                            <span>20 Luglio 2026</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Fondo Impresa Femminile & StartUp: contributi a fondo perduto
+                        </h3>
+                        <p class="text-neutral-400 text-sm mb-6">Aperti i termini per la presentazione delle domande.
+                            Assistenza dedicata alla redazione del business plan.</p>
+                    </div>
+                    <div class="p-6 bg-black/40 border-t border-white/5 flex justify-between items-center text-xs">
+                        <span class="text-neutral-400 flex items-center gap-1.5"><i
+                                class="ph ph-linkedin-logo text-sky-400"></i> Postato su LinkedIn</span>
+                        <a href="https://www.linkedin.com/company/studio-gigliotti/?originalSubdomain=it"
+                            target="_blank" class="text-sky-400 font-bold hover:underline flex items-center gap-1">Leggi
+                            su LinkedIn <i class="ph ph-arrow-up-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banner LinkedIn Direct Link -->
+            <div
+                class="mt-12 p-8 rounded-3xl bg-gradient-to-r from-sky-950/60 via-neutral-900 to-black border border-sky-500/30 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="p-4 bg-sky-500 text-black rounded-2xl">
+                        <i class="ph-fill ph-linkedin-logo text-3xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold text-white">Pagina Ufficiale LinkedIn Studio Gigliotti</h4>
+                        <p class="text-neutral-400 text-sm mt-1">Segui la pagina ufficiale per ricevere aggiornamenti
+                            quotidiani su fisco, bandi e finanza agevolata.</p>
+                    </div>
+                </div>
+                <a href="https://www.linkedin.com/company/studio-gigliotti/?originalSubdomain=it" target="_blank"
+                    class="px-8 py-4 bg-sky-500 hover:bg-sky-400 text-black font-extrabold rounded-full text-xs uppercase tracking-wider shrink-0 flex items-center gap-2 transition-transform hover:scale-105 shadow-lg shadow-sky-500/20">
+                    Visita Pagina LinkedIn <i class="ph ph-arrow-up-right text-base"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- SECTION: BOOKING GOOGLE MEET -->
+        <section id="contact" class="py-32 px-6 max-w-7xl mx-auto border-t border-white/10">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span
+                    class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-500/10 border border-sky-400/30 text-sky-400 text-xs uppercase tracking-widest font-bold mb-4">
+                    <i class="ph ph-video-camera text-base"></i> Video Call 1-to-1 Google Meet
+                </span>
+                <h2 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Prenota una Consulenza in Video Call</h2>
+                <p class="text-neutral-400 text-lg">
+                    Scegli il servizio, la data e l'orario più comodo per te. Riceverai istantaneamente l'invito su
+                    <strong>Google Meet</strong> con le notifiche inviate a <code
+                        class="text-sky-300">william_gigliotti@arubapec.it</code>.
+                </p>
+            </div>
+
+            <!-- BOOKING CONTAINER -->
+            <div
+                class="bg-neutral-900/80 border border-white/10 rounded-3xl p-8 md:p-12 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+                <!-- Decorative background elements -->
+                <div
+                    class="absolute -top-24 -right-24 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none">
+                </div>
+                <div
+                    class="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none">
+                </div>
+
+                <!-- BOOKING FORM STATE -->
+                <div id="booking-form-container" class="relative z-10">
+                    <!-- Progress Stepper -->
+                    <div
+                        class="flex items-center justify-between max-w-2xl mx-auto mb-12 border-b border-white/10 pb-6">
+                        <div id="step1-indicator" class="flex items-center gap-3 text-sky-400 font-bold text-sm">
+                            <span
+                                class="w-8 h-8 rounded-full bg-sky-500 text-black flex items-center justify-center text-xs font-black">1</span>
+                            <span>Servizio</span>
+                        </div>
+                        <div id="step2-indicator" class="flex items-center gap-3 text-neutral-500 font-bold text-sm">
+                            <span
+                                class="w-8 h-8 rounded-full bg-neutral-800 text-neutral-400 flex items-center justify-center text-xs font-black">2</span>
+                            <span>Data & Orario</span>
+                        </div>
+                        <div id="step3-indicator" class="flex items-center gap-3 text-neutral-500 font-bold text-sm">
+                            <span
+                                class="w-8 h-8 rounded-full bg-neutral-800 text-neutral-400 flex items-center justify-center text-xs font-black">3</span>
+                            <span>I Tuoi Dati</span>
+                        </div>
+                    </div>
+
+                    <form id="booking-form" onsubmit="handleBookingSubmit(event)">
+                        <!-- STEP 1: SERVICE SELECTION -->
+                        <div id="booking-step-1" class="space-y-6">
+                            <h3 class="text-xl font-bold text-white mb-4">1. Seleziona la tipologia di consulenza</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <label
+                                    class="service-card cursor-pointer block bg-black/60 border border-white/10 hover:border-sky-400 p-6 rounded-2xl transition-all relative overflow-hidden group">
+                                    <input type="radio" name="service" value="Consulenza Fiscale & Societaria" checked
+                                        class="hidden" onchange="selectService(this)">
+                                    <div
+                                        class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-400/20 text-sky-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                        <i class="ph ph-briefcase text-2xl"></i>
+                                    </div>
+                                    <div class="font-bold text-white text-lg mb-1">Consulenza Fiscale & Societaria</div>
+                                    <div class="text-xs text-sky-400 font-semibold mb-3">30 Minuti • Google Meet</div>
+                                    <p class="text-neutral-400 text-xs leading-relaxed">Analisi posizioni fiscali,
+                                        adempimenti societari e consulenza strategica per imprese e professionisti.</p>
+                                </label>
+
+                                <label
+                                    class="service-card cursor-pointer block bg-black/60 border border-white/10 hover:border-sky-400 p-6 rounded-2xl transition-all relative overflow-hidden group">
+                                    <input type="radio" name="service" value="Controllo di Gestione & Pianificazione"
+                                        class="hidden" onchange="selectService(this)">
+                                    <div
+                                        class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-400/20 text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                        <i class="ph ph-chart-bar text-2xl"></i>
+                                    </div>
+                                    <div class="font-bold text-white text-lg mb-1">Controllo di Gestione & Budget</div>
+                                    <div class="text-xs text-emerald-400 font-semibold mb-3">45 Minuti • Google Meet
+                                    </div>
+                                    <p class="text-neutral-400 text-xs leading-relaxed">Ottimizzazione dei flussi di
+                                        cassa, marginalità aziendale e reportistica direzionale.</p>
+                                </label>
+
+                                <label
+                                    class="service-card cursor-pointer block bg-black/60 border border-white/10 hover:border-sky-400 p-6 rounded-2xl transition-all relative overflow-hidden group">
+                                    <input type="radio" name="service" value="Finanza Agevolata & Crediti d'Imposta"
+                                        class="hidden" onchange="selectService(this)">
+                                    <div
+                                        class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-400/20 text-purple-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                        <i class="ph ph-target text-2xl"></i>
+                                    </div>
+                                    <div class="font-bold text-white text-lg mb-1">Finanza Agevolata & Bandi</div>
+                                    <div class="text-xs text-purple-400 font-semibold mb-3">45 Minuti • Google Meet
+                                    </div>
+                                    <p class="text-neutral-400 text-xs leading-relaxed">Valutazione di fattibilità per
+                                        Transizione 5.0, crediti R&S e bandi di contributo a fondo perduto.</p>
+                                </label>
+                            </div>
+
+                            <div class="flex justify-end pt-6">
+                                <button type="button" onclick="goToStep(2)"
+                                    class="px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-neutral-200 transition-colors flex items-center gap-2">
+                                    Continua (Data & Orario) <i class="ph ph-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2: DATE & TIME -->
+                        <div id="booking-step-2" class="hidden space-y-6">
+                            <h3 class="text-xl font-bold text-white mb-4">2. Seleziona la Data e l'Orario della Call
+                            </h3>
+                            <div
+                                class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-black/50 p-6 rounded-2xl border border-white/10">
+                                <div>
+                                    <label
+                                        class="block text-xs uppercase tracking-wider text-neutral-400 font-bold mb-3">Seleziona
+                                        la Data (Lun - Ven)</label>
+                                    <input type="date" id="booking-date" required
+                                        class="w-full bg-neutral-900 border border-white/20 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400"
+                                        onchange="updateSelectedDateDisplay(this.value)">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs uppercase tracking-wider text-neutral-400 font-bold mb-3">Orari
+                                        Disponibili (Google Meet)</label>
+                                    <div class="grid grid-cols-3 gap-3" id="time-slots-container">
+                                        <button type="button" onclick="selectTimeSlot(this)"
+                                            class="time-slot px-3 py-2.5 bg-sky-500 border border-sky-500 rounded-xl text-xs font-bold text-black">09:30</button>
+                                        <button type="button" onclick="selectTimeSlot(this)"
+                                            class="time-slot px-3 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-xs font-bold text-white hover:border-sky-400">11:00</button>
+                                        <button type="button" onclick="selectTimeSlot(this)"
+                                            class="time-slot px-3 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-xs font-bold text-white hover:border-sky-400">14:30</button>
+                                        <button type="button" onclick="selectTimeSlot(this)"
+                                            class="time-slot px-3 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-xs font-bold text-white hover:border-sky-400">16:00</button>
+                                        <button type="button" onclick="selectTimeSlot(this)"
+                                            class="time-slot px-3 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-xs font-bold text-white hover:border-sky-400">17:30</button>
+                                    </div>
+                                    <input type="hidden" id="selected-time" required value="09:30">
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between pt-6">
+                                <button type="button" onclick="goToStep(1)"
+                                    class="px-6 py-3 bg-neutral-800 text-white font-bold rounded-full hover:bg-neutral-700 transition-colors">
+                                    <i class="ph ph-arrow-left"></i> Indietro
+                                </button>
+                                <button type="button" onclick="goToStep(3)"
+                                    class="px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-neutral-200 transition-colors flex items-center gap-2">
+                                    Inserisci i Dati <i class="ph ph-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: CLIENT DETAILS -->
+                        <div id="booking-step-3" class="hidden space-y-6">
+                            <h3 class="text-xl font-bold text-white mb-4">3. I tuoi dati di contatto</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label
+                                        class="block text-xs uppercase tracking-wider text-neutral-400 font-bold mb-2">Nome
+                                        e Cognome *</label>
+                                    <input type="text" id="client-name" required placeholder="Mario Rossi"
+                                        class="w-full bg-black/60 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs uppercase tracking-wider text-neutral-400 font-bold mb-2">Email
+                                        (per invito Google Meet) *</label>
+                                    <input type="email" id="client-email" required placeholder="mario.rossi@azienda.it"
+                                        class="w-full bg-black/60 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs uppercase tracking-wider text-neutral-400 font-bold mb-2">Telefono
+                                        / WhatsApp *</label>
+                                    <input type="tel" id="client-phone" required placeholder="+39 340 123 4567"
+                                        class="w-full bg-black/60 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs uppercase tracking-wider text-neutral-400 font-bold mb-2">Ragione
+                                        Sociale / P.IVA (Opzionale)</label>
+                                    <input type="text" id="client-company" placeholder="Rossi S.r.l."
+                                        class="w-full bg-black/60 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400">
+                                </div>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs uppercase tracking-wider text-neutral-400 font-bold mb-2">Oggetto
+                                    / Breve nota per la Call</label>
+                                <textarea id="client-notes" rows="3"
+                                    placeholder="Descrivi brevemente l'argomento principale su cui vorresti focalizzare la video call..."
+                                    class="w-full bg-black/60 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400"></textarea>
+                            </div>
+
+                            <!-- Notification Target Badge -->
+                            <div
+                                class="p-4 bg-sky-950/40 border border-sky-400/20 rounded-xl flex items-center gap-3 text-xs text-sky-200">
+                                <i class="ph ph-envelope-simple text-lg text-sky-400"></i>
+                                <span>Le notifiche ed i dettagli della prenotazione verranno inviati a:
+                                    <strong>william_gigliotti@arubapec.it</strong></span>
+                            </div>
+
+                            <div class="flex justify-between pt-6">
+                                <button type="button" onclick="goToStep(2)"
+                                    class="px-6 py-3 bg-neutral-800 text-white font-bold rounded-full hover:bg-neutral-700 transition-colors">
+                                    <i class="ph ph-arrow-left"></i> Indietro
+                                </button>
+                                <button type="submit"
+                                    class="px-10 py-4 bg-sky-500 hover:bg-sky-400 text-black font-extrabold rounded-full transition-all flex items-center gap-3 shadow-lg shadow-sky-500/20">
+                                    <i class="ph ph-video-camera text-xl"></i> Conferma & Genera Google Meet
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- CONFIRMATION STATE (HIDDEN INITIALLY) -->
+                <div id="booking-confirmation-container" class="hidden text-center max-w-2xl mx-auto py-8">
+                    <div
+                        class="w-20 h-20 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/40">
+                        <i class="ph ph-check-circle text-5xl"></i>
+                    </div>
+                    <h3 class="text-3xl font-extrabold text-white mb-2">Prenotazione Confermata!</h3>
+                    <p class="text-neutral-300 text-sm mb-8">
+                        La tua sessione in Video Call con lo Studio Gigliotti è stata programmata con successo.
+                    </p>
+
+                    <!-- Booking Recap Card -->
+                    <div class="bg-black/70 border border-white/10 rounded-2xl p-6 mb-8 text-left space-y-3">
+                        <div class="flex justify-between items-center border-b border-white/10 pb-3">
+                            <span class="text-xs uppercase font-bold text-neutral-400">Servizio:</span>
+                            <span id="confirm-service" class="font-bold text-sky-400 text-sm">Consulenza Fiscale</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-white/10 pb-3">
+                            <span class="text-xs uppercase font-bold text-neutral-400">Data & Orario:</span>
+                            <span id="confirm-datetime" class="font-bold text-white text-sm">--</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-white/10 pb-3">
+                            <span class="text-xs uppercase font-bold text-neutral-400">Cliente:</span>
+                            <span id="confirm-client" class="font-semibold text-neutral-200 text-sm">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs uppercase font-bold text-neutral-400">Notifica inviata a:</span>
+                            <span class="font-mono text-xs text-sky-300">william_gigliotti@arubapec.it</span>
+                        </div>
+                    </div>
+
+                    <!-- Google Meet Link CTA -->
+                    <div
+                        class="p-6 bg-gradient-to-r from-sky-950/80 via-indigo-950/80 to-black border border-sky-400/40 rounded-2xl mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="text-left">
+                            <div class="text-xs uppercase tracking-widest text-sky-400 font-bold mb-1">Stanza Video Call
+                                Google Meet</div>
+                            <div class="font-mono text-sm text-white font-bold" id="meet-url-text">
+                                https://meet.google.com/studio-gigliotti-meet</div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button onclick="copyMeetLink()"
+                                class="px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl text-xs font-bold flex items-center gap-2">
+                                <i class="ph ph-copy"></i> Copia Link
+                            </button>
+                            <a id="meet-join-btn" href="https://meet.google.com/studio-gigliotti-meet" target="_blank"
+                                class="px-6 py-2.5 bg-sky-500 hover:bg-sky-400 text-black font-bold rounded-xl text-xs flex items-center gap-2">
+                                <i class="ph ph-video-camera"></i> Entra su Meet
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Add to Google Calendar -->
+                    <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                        <a id="gcal-add-btn" href="#" target="_blank"
+                            class="w-full sm:w-auto px-8 py-3.5 bg-white text-black font-bold rounded-full hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2 text-sm">
+                            <i class="ph ph-calendar-plus text-lg"></i> Aggiungi a Google Calendar
+                        </a>
+                        <button onclick="resetBookingForm()"
+                            class="w-full sm:w-auto px-6 py-3.5 bg-neutral-800 text-neutral-300 font-bold rounded-full hover:bg-neutral-700 transition-colors text-sm">
+                            Nuova Prenotazione
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer
+            class="py-16 text-center relative bg-black flex flex-col items-center justify-center px-6 border-t border-white/10">
+            <div class="w-full max-w-7xl flex justify-between items-center text-neutral-500 text-sm">
+                <div class="text-white font-bold tracking-wider text-xl flex items-center gap-2">
+                    <img src="Assets/logo.jpg" alt="Logo" class="w-8 h-8 rounded-full object-cover">
+                    Studio Gigliotti
+                </div>
+                <div>&copy; 2026 Studio Gigliotti. Referente: william_gigliotti@arubapec.it. Tutti i diritti riservati.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        const dashboard = document.getElementById('dashboard');
+        const mainSite = document.getElementById('main-site');
+        const gridContainer = document.getElementById('gridContainer');
+        const flashOverlay = document.getElementById('flash-overlay');
+
+        // Hover tilt effect
+        document.addEventListener('mousemove', (e) => {
+            if (dashboard.style.display === 'none') return;
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            gsap.to(gridContainer, {
+                rotationY: -20 + (xAxis * 0.5),
+                rotationX: 15 - (yAxis * 0.5),
+                duration: 1,
+                ease: "power1.out"
+            });
+        });
+
+        function initiateExploration(clickedCard, targetAnchor) {
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    if (targetAnchor) {
+                        const target = document.querySelector(targetAnchor);
+                        if (target) target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+
+            gsap.to('.dash-card', {
+                filter: "blur(10px)",
+                opacity: 0,
+                z: -1000,
+                duration: 0.6,
+                ease: "power2.in"
+            });
+
+            gsap.set(clickedCard, { zIndex: 9999, opacity: 1, filter: "none" });
+
+            tl.to(gridContainer, {
+                rotationX: 0,
+                rotationY: 0,
+                duration: 0.8,
+                ease: "power4.inOut"
+            }, "-=0.4");
+
+            tl.to(clickedCard, {
+                z: 1200,
+                scale: 3,
+                rotationZ: 25,
+                duration: 1,
+                opacity: 1,
+                ease: "expo.inOut"
+            }, "-=0.6");
+
+            tl.to(flashOverlay, {
+                opacity: 1,
+                duration: 0.4,
+                ease: "power2.in"
+            }, "-=0.3");
+
+            tl.set(dashboard, { display: 'none' });
+            tl.set(mainSite, { visibility: 'visible', opacity: 1 });
+            tl.set('body', { overflowY: 'auto' });
+
+            tl.to(flashOverlay, {
+                opacity: 0,
+                duration: 0.8,
+                ease: "power2.out"
+            });
+        }
+
+        function returnToDashboard() {
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            const tl = gsap.timeline();
+
+            tl.to(flashOverlay, {
+                opacity: 1,
+                duration: 0.4,
+                ease: "power2.in"
+            });
+
+            tl.set(mainSite, { visibility: 'hidden', opacity: 0 });
+            tl.set(dashboard, { display: 'flex' });
+            tl.set('body', { overflowY: 'hidden' });
+
+            gsap.set('.dash-card', { clearProps: "filter,opacity,z,zIndex,scale,rotationZ" });
+            gsap.set(gridContainer, { clearProps: "rotationX,rotationY" });
+
+            tl.to(flashOverlay, {
+                opacity: 0,
+                duration: 0.8,
+                ease: "power2.out"
+            });
+        }
+
+        // --- BOOKING ENGINE LOGIC ---
+        let selectedService = "Consulenza Fiscale & Societaria";
+        let selectedDate = new Date().toISOString().split('T')[0];
+        let selectedTime = "09:30";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const dateInput = document.getElementById('booking-date');
+            if (dateInput) {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const yyyy = tomorrow.getFullYear();
+                const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+                const dd = String(tomorrow.getDate()).padStart(2, '0');
+                selectedDate = `${yyyy}-${mm}-${dd}`;
+                dateInput.value = selectedDate;
+                dateInput.min = `${yyyy}-${mm}-${dd}`;
+            }
+        });
+
+        function goToStep(step) {
+            document.getElementById('booking-step-1').classList.add('hidden');
+            document.getElementById('booking-step-2').classList.add('hidden');
+            document.getElementById('booking-step-3').classList.add('hidden');
+
+            document.getElementById(`booking-step-${step}`).classList.remove('hidden');
+
+            [1, 2, 3].forEach(s => {
+                const ind = document.getElementById(`step${s}-indicator`);
+                if (ind) {
+                    if (s === step) {
+                        ind.className = "flex items-center gap-3 text-sky-400 font-bold text-sm";
+                        ind.children[0].className = "w-8 h-8 rounded-full bg-sky-500 text-black flex items-center justify-center text-xs font-black";
+                    } else if (s < step) {
+                        ind.className = "flex items-center gap-3 text-emerald-400 font-bold text-sm";
+                        ind.children[0].className = "w-8 h-8 rounded-full bg-emerald-500 text-black flex items-center justify-center text-xs font-black";
+                    } else {
+                        ind.className = "flex items-center gap-3 text-neutral-500 font-bold text-sm";
+                        ind.children[0].className = "w-8 h-8 rounded-full bg-neutral-800 text-neutral-400 flex items-center justify-center text-xs font-black";
+                    }
+                }
+            });
+        }
+
+        function selectService(input) {
+            selectedService = input.value;
+        }
+
+        function selectTimeSlot(btn) {
+            document.querySelectorAll('.time-slot').forEach(b => {
+                b.className = 'time-slot px-3 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-xs font-bold text-white hover:border-sky-400';
+            });
+            btn.className = 'time-slot px-3 py-2.5 bg-sky-500 border border-sky-500 rounded-xl text-xs font-bold text-black';
+            selectedTime = btn.innerText.trim();
+            document.getElementById('selected-time').value = selectedTime;
+        }
+
+        function updateSelectedDateDisplay(val) {
+            selectedDate = val;
+        }
+
+        function handleBookingSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('client-name').value;
+            const email = document.getElementById('client-email').value;
+            const phone = document.getElementById('client-phone').value;
+            const company = document.getElementById('client-company').value || "N/A";
+            const notes = document.getElementById('client-notes').value || "Nessuna nota";
+
+            const randomSlug = 'gigliotti-' + Math.random().toString(36).substring(2, 6) + '-' + Math.random().toString(36).substring(2, 5);
+            const meetUrl = `https://meet.google.com/${randomSlug}`;
+
+            document.getElementById('confirm-service').innerText = selectedService;
+            document.getElementById('confirm-datetime').innerText = `${selectedDate} alle ore ${selectedTime}`;
+            document.getElementById('confirm-client').innerText = `${name} (${email}, Tel: ${phone})`;
+            document.getElementById('meet-url-text').innerText = meetUrl;
+            document.getElementById('meet-join-btn').href = meetUrl;
+
+            const title = encodeURIComponent(`Consulenza Studio Gigliotti: ${selectedService}`);
+            const details = encodeURIComponent(`Incontro Google Meet con Studio Gigliotti.\nPartecipanti: ${name} (${email}), william_gigliotti@arubapec.it\nLink Google Meet: ${meetUrl}\nNote: ${notes}`);
+            const dateClean = selectedDate.replace(/-/g, '');
+            const timeClean = selectedTime.replace(':', '') + '00';
+            const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dateClean}T${timeClean}/${dateClean}T${timeClean}&details=${details}&add=william_gigliotti@arubapec.it,${email}`;
+
+            document.getElementById('gcal-add-btn').href = gcalUrl;
+
+            document.getElementById('booking-form-container').classList.add('hidden');
+            document.getElementById('booking-confirmation-container').classList.remove('hidden');
+        }
+
+        function copyMeetLink() {
+            const meetUrl = document.getElementById('meet-url-text').innerText;
+            navigator.clipboard.writeText(meetUrl);
+            alert("Link Google Meet copiato negli appunti: " + meetUrl);
+        }
+
+        function resetBookingForm() {
+            document.getElementById('booking-form').reset();
+            document.getElementById('booking-confirmation-container').classList.add('hidden');
+            document.getElementById('booking-form-container').classList.remove('hidden');
+            goToStep(1);
+        }
+    </script>
+</body>
+
+</html>
