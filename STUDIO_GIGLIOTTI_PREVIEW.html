@@ -128,6 +128,71 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        /* Mobile Responsive Adjustments */
+        @media (max-width: 768px) {
+            #dashboard {
+                padding: 1rem;
+                perspective: 900px;
+            }
+
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.85rem !important;
+                transform: rotateX(8deg) rotateY(-8deg) scale(0.95) !important;
+                margin-top: 4.5rem !important;
+            }
+
+            .dash-card {
+                width: 155px !important;
+                height: 115px !important;
+                border-radius: 16px !important;
+            }
+
+            .dash-card div[style*="position: absolute; bottom"] {
+                bottom: 0.5rem !important;
+                left: 0.5rem !important;
+                padding: 3px 8px !important;
+                font-size: 0.65rem !important;
+                gap: 4px !important;
+            }
+
+            .dash-card div[style*="position: absolute; bottom"] i {
+                font-size: 12px !important;
+            }
+
+            #hero-title {
+                font-size: 2.25rem !important;
+                line-height: 1.15 !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.65rem !important;
+                transform: rotateX(6deg) rotateY(-6deg) scale(0.92) !important;
+                margin-top: 5rem !important;
+            }
+
+            .dash-card {
+                width: 140px !important;
+                height: 105px !important;
+                border-radius: 14px !important;
+            }
+
+            .dash-card div[style*="position: absolute; bottom"] {
+                bottom: 0.4rem !important;
+                left: 0.4rem !important;
+                padding: 3px 6px !important;
+                font-size: 0.6rem !important;
+                gap: 3px !important;
+            }
+
+            .dash-card div[style*="position: absolute; bottom"] i {
+                font-size: 11px !important;
+            }
+        }
+
         .gradient-text {
             background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
             -webkit-background-clip: text;
@@ -217,9 +282,6 @@
                         style="background: rgba(255,255,255,0.95); border: 1px solid rgba(255,255,255,0.9); padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; color: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(4px);">
                         <i class="ph ph-calculator" style="font-size: 16px; color: #000;"></i> Utility & Calcolatori
                     </div>
-                    <div
-                        style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); margin-left: 4px;">
-                        Strumenti pratici & Metodo operativo</div>
                 </div>
                 <div class="primary-indicator" style="z-index: 10;">
                     <div
@@ -974,18 +1036,23 @@
         const gridContainer = document.getElementById('gridContainer');
         const flashOverlay = document.getElementById('flash-overlay');
 
-        // Hover tilt effect
-        document.addEventListener('mousemove', (e) => {
+        // Hover/Touch tilt effect
+        const handleTiltMove = (e) => {
             if (dashboard.style.display === 'none') return;
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            const clientX = e.touches ? e.touches[0].clientX : e.pageX;
+            const clientY = e.touches ? e.touches[0].clientY : e.pageY;
+            const xAxis = (window.innerWidth / 2 - clientX) / 25;
+            const yAxis = (window.innerHeight / 2 - clientY) / 25;
             gsap.to(gridContainer, {
-                rotationY: -20 + (xAxis * 0.5),
-                rotationX: 15 - (yAxis * 0.5),
+                rotationY: -15 + (xAxis * 0.4),
+                rotationX: 10 - (yAxis * 0.4),
                 duration: 1,
                 ease: "power1.out"
             });
-        });
+        };
+
+        document.addEventListener('mousemove', handleTiltMove);
+        document.addEventListener('touchmove', handleTiltMove, { passive: true });
 
         function initiateExploration(clickedCard, targetAnchor) {
             const tl = gsap.timeline({
