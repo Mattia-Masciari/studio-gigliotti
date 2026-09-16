@@ -89,12 +89,69 @@ export default function Home() {
       });
     };
 
+    // Interactive scroll & swipe motion logic for cards
+    let scrollShift = 0;
+    let targetScrollShift = 0;
+    let isTouching = false;
+    let lastTouchY = 0;
+    let lastTouchX = 0;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (!isDashboardActive.current) return;
+      targetScrollShift += e.deltaY * 0.45;
+      targetScrollShift = Math.max(-60, Math.min(60, targetScrollShift));
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (!isDashboardActive.current || !e.touches[0]) return;
+      isTouching = true;
+      lastTouchY = e.touches[0].clientY;
+      lastTouchX = e.touches[0].clientX;
+    };
+
+    const handleTouchMoveScroll = (e: TouchEvent) => {
+      if (!isDashboardActive.current || !e.touches[0]) return;
+      const deltaY = lastTouchY - e.touches[0].clientY;
+      const deltaX = lastTouchX - e.touches[0].clientX;
+      lastTouchY = e.touches[0].clientY;
+      lastTouchX = e.touches[0].clientX;
+
+      targetScrollShift += deltaY * 0.7 + deltaX * 0.4;
+      targetScrollShift = Math.max(-60, Math.min(60, targetScrollShift));
+    };
+
+    const handleTouchEnd = () => {
+      isTouching = false;
+    };
+
+    let animFrameId: number;
+    const updateDashboardMotion = () => {
+      if (isDashboardActive.current && gridContainerRef.current) {
+        scrollShift += (targetScrollShift - scrollShift) * 0.12;
+        if (!isTouching) {
+          targetScrollShift *= 0.93;
+        }
+        gridContainerRef.current.style.setProperty("--scroll-shift", `${scrollShift.toFixed(2)}px`);
+      }
+      animFrameId = requestAnimationFrame(updateDashboardMotion);
+    };
+    animFrameId = requestAnimationFrame(updateDashboardMotion);
+
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("wheel", handleWheel, { passive: true });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMoveScroll, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMoveScroll);
+      window.removeEventListener("touchend", handleTouchEnd);
+      cancelAnimationFrame(animFrameId);
       ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
@@ -342,7 +399,8 @@ export default function Home() {
         <div className="grid-container mt-12 sm:mt-16" ref={gridContainerRef}>
           {/* Card 1: Expertise */}
           <div
-            className="dash-card opacity-90 transform translate-y-4 sm:translate-y-8 cursor-pointer"
+            className="dash-card opacity-90 cursor-pointer"
+            style={{ "--offset-y": "20px" } as React.CSSProperties}
             onClick={(e) => handleCardClick(e, "#expertise")}
           >
             <Image
@@ -359,7 +417,8 @@ export default function Home() {
 
           {/* Card 2: Our Vision */}
           <div
-            className="dash-card opacity-90 transform translate-x-2 sm:translate-x-4 cursor-pointer"
+            className="dash-card opacity-90 cursor-pointer"
+            style={{ "--offset-x": "10px" } as React.CSSProperties}
             onClick={(e) => handleCardClick(e, "#vision")}
           >
             <Image src="/assets/tutti.jpg" alt="Vision" fill className="object-cover" />
@@ -388,7 +447,8 @@ export default function Home() {
 
           {/* Card 4: Our Mission */}
           <div
-            className="dash-card opacity-90 transform -translate-y-2 cursor-pointer"
+            className="dash-card opacity-90 cursor-pointer"
+            style={{ "--offset-y": "-10px" } as React.CSSProperties}
             onClick={(e) => handleCardClick(e, "#mission")}
           >
             <Image
@@ -405,33 +465,25 @@ export default function Home() {
 
           {/* Card 5: Utility & Calcolatori */}
           <div
-            id="active-card"
-            className="dash-card transform scale-105 sm:scale-110 z-20 border-2 sm:border-4 border-white relative bg-black cursor-pointer"
+            className="dash-card opacity-90 cursor-pointer"
             onClick={(e) => handleCardClick(e, "#utility")}
           >
             <Image
-              src="https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=500&q=80"
+              src="https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=400&q=60"
               alt="Utility e Calcolatori"
               fill
-              className="object-cover opacity-80 hover:opacity-100 transition-all duration-700"
+              className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-black/30 to-transparent"></div>
-            <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10 flex flex-col items-start gap-1 card-badge">
-              <div className="bg-white/95 border border-white/90 py-1 px-2.5 sm:py-1.5 sm:px-3.5 rounded-full text-[10px] sm:text-xs font-bold text-black shadow-md backdrop-blur flex items-center gap-1.5">
-                <Calculator size={16} className="text-black shrink-0" />
-                Utility & Calcolatori
-              </div>
-            </div>
-            <div className="primary-indicator z-10">
-              <div className="bg-white text-black w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-lg sm:text-xl shadow-lg">
-                <Play weight="fill" />
-              </div>
+            <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 bg-white/95 border border-white/90 py-1 px-2.5 sm:py-1.5 sm:px-3.5 rounded-full text-[10px] sm:text-xs font-bold text-black shadow-md backdrop-blur flex items-center gap-1.5 card-badge">
+              <Calculator size={16} className="text-black shrink-0" />
+              Utility & Calcolatori
             </div>
           </div>
 
           {/* Card 6: News & Bandi */}
           <div
-            className="dash-card opacity-90 transform -translate-y-4 sm:-translate-y-8 cursor-pointer"
+            className="dash-card opacity-90 cursor-pointer"
+            style={{ "--offset-y": "-30px" } as React.CSSProperties}
             onClick={(e) => handleCardClick(e, "#news")}
           >
             <Image
@@ -1107,7 +1159,10 @@ export default function Home() {
                       <h3 className="text-lg sm:text-xl font-bold text-white mb-4">1. Seleziona la tipologia di consulenza</h3>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                         <div
-                          onClick={() => setSelectedService("Consulenza Fiscale & Societaria")}
+                          onClick={() => {
+                            setSelectedService("Consulenza Fiscale & Societaria");
+                            setTimeout(() => setBookingStep(2), 160);
+                          }}
                           className={`cursor-pointer bg-black/60 border p-5 sm:p-6 rounded-2xl transition-all relative overflow-hidden group ${
                             selectedService === "Consulenza Fiscale & Societaria" ? "border-sky-400 ring-2 ring-sky-400/20" : "border-white/10 hover:border-sky-400"
                           }`}
@@ -1123,7 +1178,10 @@ export default function Home() {
                         </div>
 
                         <div
-                          onClick={() => setSelectedService("Controllo di Gestione & Budget")}
+                          onClick={() => {
+                            setSelectedService("Controllo di Gestione & Budget");
+                            setTimeout(() => setBookingStep(2), 160);
+                          }}
                           className={`cursor-pointer bg-black/60 border p-5 sm:p-6 rounded-2xl transition-all relative overflow-hidden group ${
                             selectedService === "Controllo di Gestione & Budget" ? "border-emerald-400 ring-2 ring-emerald-400/20" : "border-white/10 hover:border-emerald-400"
                           }`}
@@ -1139,7 +1197,10 @@ export default function Home() {
                         </div>
 
                         <div
-                          onClick={() => setSelectedService("Finanza Agevolata & Bandi")}
+                          onClick={() => {
+                            setSelectedService("Finanza Agevolata & Bandi");
+                            setTimeout(() => setBookingStep(2), 160);
+                          }}
                           className={`cursor-pointer bg-black/60 border p-5 sm:p-6 rounded-2xl transition-all relative overflow-hidden group ${
                             selectedService === "Finanza Agevolata & Bandi" ? "border-purple-400 ring-2 ring-purple-400/20" : "border-white/10 hover:border-purple-400"
                           }`}
